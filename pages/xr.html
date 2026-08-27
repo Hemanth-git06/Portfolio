@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>XR Work — Hemanth Yarramsetti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_subpage.css" />
+<style>:root{ --cat-hue: 200; }</style>
+</head>
+<body>
+<div class="nebula"></div>
+<div class="grid-veil"></div>
+
+<nav class="subnav">
+  <div class="crumbs mono" style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase;">
+    <a href="../Portfolio.html">← Hemanth Yarramsetti</a>
+    <span class="sep">/</span>
+    <span style="color:white;">XR</span>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <a class="btn-ghost" href="3d.html">3D</a>
+    <a class="btn-ghost" href="gamedev.html">Game Dev</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<section class="hero-section">
+  <div>
+    <div class="h-eyebrow">Track 03 / 03 · 6 projects</div>
+    <h1 class="h-title"><span class="hero-heading">Spatial &amp;</span><br/><span class="accent-heading">XR</span></h1>
+    <p class="h-subtitle">Hand-tracking, locomotion and interaction systems for Quest, Vision Pro and WebXR — built around presence, comfort and clarity. Comfortable across the stack from OpenXR up to interaction toolkits.</p>
+    <div class="h-actions">
+      <a class="btn-primary" href="../Portfolio.html#contact">Start a project</a>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:24px;">
+      <span class="pill"><span class="dot"></span>Unity XR</span>
+      <span class="pill"><span class="dot"></span>OpenXR</span>
+      <span class="pill"><span class="dot"></span>WebXR</span>
+      <span class="pill"><span class="dot"></span>Quest 3</span>
+      <span class="pill"><span class="dot"></span>Vision Pro</span>
+    </div>
+  </div>
+  <div class="icon-card glass-shine">
+    <div class="icon-inner"><img src="../assets/icons/vr.png" alt="XR"/></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Research</h2>
+  <p class="lead">An ongoing exploration into believable presence — pairing a photoreal Unreal Engine environment with a MetaHuman you can talk to and gesture at in mixed reality.</p>
+
+  <div class="projects-list">
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">R1</div>
+        <div class="project-info">
+          <h3 class="project-name">Mixed Reality &amp; MetaHuman Interaction</h3>
+          <p class="project-desc">Developed a MetaHuman-based virtual instructor in Unreal Engine to guide users through real-world task sequences, including robot stacking workflows, within an immersive AR/VR environment. Supported research in human-robot interaction, robotics simulation, and human-centered computing by designing the agent's interaction flow, communication behavior, and in-environment presence to create a natural and responsive user experience. Built and deployed interactive 3D environments and assets on Meta Quest, integrating immersive visualization tools for realistic experimental setups.</p>
+          <div class="project-tags">
+            <span class="tag">Unreal Engine</span><span class="tag">MetaHuman</span><span class="tag">Human-Robot Interaction</span><span class="tag">Meta Quest</span>
+          </div>
+        </div>
+      </header>
+      <div class="video-triangle">
+        <figure><video src="../assets/xr/unreal-environment.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure><video src="../assets/xr/xr.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="apex"><video src="../assets/xr/metahuman-interaction.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+      </div>
+    </article>
+
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">R2</div>
+        <div class="project-info">
+          <h3 class="project-name">Real-Time Embedded Systems &amp; Physical Prototyping</h3>
+          <p class="project-desc">Researching the intersection of real-time embedded systems with modern interactive technologies, including Mixed Reality, game engines, and human-in-the-loop interfaces. Conducting research on latency-aware system behavior, with focus on timing guarantees, deadline handling, system responsiveness, reliability, and formal verification. Supporting physical prototyping through 3D printing by designing enclosures, mounting structures, and hardware components that bridge software systems with real-world implementation. Contributing to a drone build project involving embedded controllers, sensors, mechanical design, and real-time decision-making.</p>
+          <div class="project-tags">
+            <span class="tag">Embedded Systems</span><span class="tag">Real-Time Computing</span><span class="tag">3D Printing</span><span class="tag">Drone Build</span>
+          </div>
+        </div>
+      </header>
+      <div class="video-side">
+        <figure class="vertical-video"><video src="../assets/xr/drone-1.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="contain-video"><video src="../assets/xr/drone-2.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="contain-video"><video src="../assets/xr/drone-3.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Projects</h2>
+  <div class="projects-list">
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">P1</div>
+        <div class="project-info">
+          <h3 class="project-name">BIM, VR &amp; Digital Construction</h3>
+          <p class="project-desc">Supporting digital construction workflows by creating Revit BIM models, exporting them into Unity for immersive VR walkthroughs, and presenting visualizations through the Visbox immersive CAVE system. Converting BIM models into 3D-printable architectural models for physical presentations and demonstrations. Exploring construction management platforms such as Procore and Autodesk Forma, including workflows related to scheduling, cost tracking, RFIs, submittals, safety management, and project visualization.</p>
+          <div class="project-tags">
+            <span class="tag">Revit BIM</span><span class="tag">Unity VR</span><span class="tag">Visbox CAVE</span><span class="tag">Procore</span><span class="tag">Autodesk Forma</span>
+          </div>
+        </div>
+      </header>
+      <div class="case-media contain-video" aria-label="VISBOX CAVE walkthrough">
+        <video src="../assets/xr/visbox.mp4" autoplay loop muted playsinline preload="metadata"></video>
+      </div>
+    </article>
+  </div>
+</section>
+<section class="tools-strip">
+  <div class="tools-head">
+    <span class="tools-eyebrow mono">Toolkit</span>
+    <h3 class="tools-title">Engines &amp; languages used across these projects</h3>
+  </div>
+  <ul class="tools-row">
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/unreal.svg" alt=""/></div><span>Unreal</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/unity.svg" alt=""/></div><span>Unity</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/csharp.svg" alt=""/></div><span>C#</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/cplus.svg" alt=""/></div><span>C++</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/maya.jpg" alt=""/></div><span>Maya</span></li>
+  </ul>
+</section>
+
+<footer class="page-foot">
+  <div>© 2026 Hemanth Yarramsetti</div>
+  <div>XR · Quest · Vision Pro · WebXR</div>
+  <a href="../Portfolio.html">Back to home ↗</a>
+</footer>
+
+</div>
+</body>
+</html>

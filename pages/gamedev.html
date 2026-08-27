@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Game Dev — Hemanth Yarramsetti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_subpage.css" />
+<style>:root{ --cat-hue: 28; }</style>
+</head>
+<body>
+<div class="nebula"></div>
+<div class="grid-veil"></div>
+
+<nav class="subnav">
+  <div class="crumbs mono" style="font-size:11px; letter-spacing:0.2em; text-transform:uppercase;">
+    <a href="../Portfolio.html">← Hemanth Yarramsetti</a>
+    <span class="sep">/</span>
+    <span style="color:white;">Game Dev</span>
+  </div>
+  <div style="display:flex; gap:10px;">
+    <a class="btn-ghost" href="3d.html">3D</a>
+    <a class="btn-ghost" href="xr.html">XR</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<section class="hero-section">
+  <div>
+    <div class="h-eyebrow">Track 02 / 03 · Shaders &amp; gameplay</div>
+    <h1 class="h-title"><span class="hero-heading">Gameplay &amp;</span><br/><span class="accent-heading">Interaction</span></h1>
+    <p class="h-subtitle">Tight, readable mechanics, AI behaviors and real-time shaders in Unity &amp; Unreal — built in C#, C++ and Shader Graph. Prototypes that feel alive within a week, plus the editor tools and pipelines to ship them faster next time.</p>
+    <div class="h-actions">
+      <a class="btn-primary" href="../Portfolio.html#contact">Get in touch</a>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:24px;">
+      <span class="pill"><span class="dot"></span>Unity</span>
+      <span class="pill"><span class="dot"></span>Unreal Engine</span>
+      <span class="pill"><span class="dot"></span>C#</span>
+      <span class="pill"><span class="dot"></span>C++</span>
+      <span class="pill"><span class="dot"></span>Shader Graph</span>
+    </div>
+  </div>
+  <div class="icon-card glass-shine">
+    <div class="icon-inner"><img src="../assets/icons/gamepad.png" alt="Game Dev"/></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Shader experiments</h2>
+  <p class="lead">Three real-time shaders built in Unity 6's Shader Graph — toon shading, a hologram pass and a noise-driven dissolve. Each card shows the result, the graph and the material inspector side-by-side.</p>
+
+  <div class="projects-list">
+
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">01</div>
+        <div class="project-info">
+          <h3 class="project-name">Toon Shader</h3>
+          <p class="project-desc">A three-band toon shader with a rim-light pass — uses a Smoothstep on N·L to quantize the lighting, then lerps between shadow and light colors before adding a fresnel-shaped rim on top. Exposed three colors so the look reads in any palette.</p>
+          <div class="project-tags">
+            <span class="tag">Unity 6</span><span class="tag">URP</span><span class="tag">Shader Graph</span><span class="tag">Stylized</span>
+          </div>
+        </div>
+      </header>
+      <div class="shader-grid">
+        <figure class="span-12 media-16x9 video"><video src="../assets/gamedev/toon.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="span-8 media-16x9"><img src="../assets/gamedev/toon-graph.png" alt="Toon shader graph in Unity"/></figure>
+        <figure class="span-4 media-inspector contain"><img src="../assets/gamedev/toon-inspector.png" alt="Toon material inspector"/></figure>
+      </div>
+    </article>
+
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">02</div>
+        <div class="project-info">
+          <h3 class="project-name">Hologram Shader</h3>
+          <p class="project-desc">A scrolling scan-line hologram with a fresnel edge glow. Screen-space UVs drive the stripe texture so the lines stay tight to the camera, and the fresnel falloff is multiplied into emission for the rim glow — used on a rifle pickup as a "next weapon" highlight.</p>
+          <div class="project-tags">
+            <span class="tag">Unity 6</span><span class="tag">URP</span><span class="tag">Fresnel</span><span class="tag">Transparent</span>
+          </div>
+        </div>
+      </header>
+      <div class="shader-grid">
+        <figure class="span-8 media-16x9 video"><video src="../assets/gamedev/hologram.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="span-4 media-16x9"><img src="../assets/gamedev/hologram-side.png" alt="Hologram rifle in the game view"/></figure>
+        <figure class="span-8 media-16x9"><img src="../assets/gamedev/hologram-graph.png" alt="Hologram shader graph"/></figure>
+        <figure class="span-4 media-inspector contain"><img src="../assets/gamedev/hologram-inspector.png" alt="Hologram material inspector"/></figure>
+      </div>
+    </article>
+
+    <article class="project">
+      <header class="project-head">
+        <div class="project-num mono">03</div>
+        <div class="project-info">
+          <h3 class="project-name">Dissolve Shader</h3>
+          <p class="project-desc">A noise-mask dissolve driven by time — Simple Noise feeds an alpha clip threshold, while a Step of the same noise (offset by edge width) drives the emissive ring at the dissolution front. HDR edge color so it picks up bloom in URP.</p>
+          <div class="project-tags">
+            <span class="tag">Unity 6</span><span class="tag">URP</span><span class="tag">Alpha Clip</span><span class="tag">VFX</span>
+          </div>
+        </div>
+      </header>
+      <div class="shader-grid">
+        <figure class="span-12 media-16x9 video"><video src="../assets/gamedev/dissolve.mp4" autoplay loop muted playsinline preload="metadata"></video></figure>
+        <figure class="span-8 media-16x9"><img src="../assets/gamedev/dissolve-graph.png" alt="Dissolve shader graph"/></figure>
+        <figure class="span-4 media-inspector contain"><img src="../assets/gamedev/dissolve-inspector.png" alt="Dissolve material inspector"/></figure>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="tools-strip">
+  <div class="tools-head">
+    <span class="tools-eyebrow mono">Toolkit</span>
+    <h3 class="tools-title">Engines &amp; languages used across these projects</h3>
+  </div>
+  <ul class="tools-row tools-row-6">
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/unity.svg" alt=""/></div><span>Unity</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/unreal.svg" alt=""/></div><span>Unreal</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/csharp.svg" alt=""/></div><span>C#</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/cplus.svg" alt=""/></div><span>C++</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/python.png" alt=""/></div><span>Python</span></li>
+    <li class="tool"><div class="tool-icon"><img src="../assets/skills/maya.jpg" alt=""/></div><span>Maya</span></li>
+  </ul>
+</section>
+
+<footer class="page-foot">
+  <div>© 2026 Hemanth Yarramsetti</div>
+  <div>Game Dev · Unity · Unreal · C++ · C#</div>
+  <a href="../Portfolio.html">Back to home ↗</a>
+</footer>
+
+</div>
+</body>
+</html>

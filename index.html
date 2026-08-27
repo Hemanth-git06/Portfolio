@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Hemanth Yarramsetti — 3D Technical Artist / XR Developer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="image-slot.js"></script>
+<style>
+  :root {
+    --bg: #07060B;
+    --ink: #ECEAF6;
+    --line: rgba(255,255,255,0.08);
+  }
+  html, body, #root { background: var(--bg); color: var(--ink); }
+  body { font-family: 'Kanit', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .hero-heading{
+    background: linear-gradient(180deg, #FFFFFF 0%, #8C84B5 55%, #4F4974 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  .accent-heading{
+    background: linear-gradient(115deg, #FFFFFF 0%, #C9C2FF 38%, #8C7BFF 70%, #FFB07A 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+  }
+  /* Animated nebula backdrop */
+  .nebula{
+    position: fixed; inset:-10%; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(60% 50% at 18% 22%, rgba(108,92,231,0.35) 0%, rgba(108,92,231,0) 60%),
+      radial-gradient(50% 40% at 82% 28%, rgba(194,75,255,0.22) 0%, rgba(194,75,255,0) 60%),
+      radial-gradient(70% 60% at 60% 90%, rgba(255,157,92,0.16) 0%, rgba(255,157,92,0) 60%),
+      radial-gradient(40% 35% at 8% 80%, rgba(76,187,255,0.18) 0%, rgba(76,187,255,0) 60%);
+    animation: drift 28s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+    100% { transform: translate3d(3%, 2%, 0) scale(1.05); }
+  }
+  .grid-veil{
+    position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at 50% 30%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 30%, transparent 75%);
+  }
+  /* GLASS */
+  .glass{
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      inset 0 -1px 0 rgba(255,255,255,0.04),
+      0 24px 60px -20px rgba(0,0,0,0.6);
+  }
+  .glass-soft{
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .glass-shine{
+    position:absolute; inset:0; pointer-events:none; border-radius: inherit;
+    background:
+      radial-gradient(120% 60% at 0% 0%, rgba(255,255,255,0.18), transparent 50%),
+      radial-gradient(120% 60% at 100% 100%, rgba(140,123,255,0.10), transparent 50%);
+    mix-blend-mode: screen;
+  }
+  /* Orbit ring around portrait */
+  .orbit{
+    position:absolute; inset:-14%;
+    border-radius:9999px;
+    border: 1px dashed rgba(255,255,255,0.12);
+    animation: spin 40s linear infinite;
+  }
+  .orbit::before{
+    content:""; position:absolute; width:10px; height:10px; border-radius:9999px;
+    background: #C9C2FF; top:-5px; left:50%; transform:translateX(-50%);
+    box-shadow: 0 0 22px 4px rgba(140,123,255,0.6);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  /* Buttons */
+  .btn-primary{
+    position:relative;
+    background: linear-gradient(135deg, #6C5CE7 0%, #8C7BFF 35%, #C24BFF 70%, #FF9D5C 100%);
+    color:white; border-radius: 9999px;
+    padding: 14px 28px;
+    font-weight:500; text-transform:uppercase; letter-spacing: 0.18em; font-size: 13px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.18), 0 18px 40px -10px rgba(108,92,231,0.55), inset 0 1px 0 rgba(255,255,255,0.5);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(255,255,255,0.28), 0 22px 50px -8px rgba(194,75,255,0.55), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .btn-ghost{
+    border-radius:9999px; padding: 12px 22px;
+    border:1px solid rgba(255,255,255,0.22);
+    color: var(--ink); text-transform:uppercase; letter-spacing:0.18em; font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    transition: background .2s ease, border-color .2s ease;
+  }
+  .btn-ghost:hover{ background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.4); }
+  /* Tag pill */
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 6px 12px; border-radius: 9999px;
+    background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(255,255,255,0.78);
+  }
+  .pill .dot{ width:6px; height:6px; border-radius:9999px; background: #8C7BFF; box-shadow: 0 0 10px #8C7BFF; }
+  /* Reveal */
+  .reveal{ opacity:1; transform: none; transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+  .reveal.pre{ opacity:0; transform: translateY(24px); }
+  .reveal.in{ opacity:1; transform: none; }
+  /* Char reveal */
+  .char{ transition: opacity .4s ease, color .4s ease; }
+  /* Service rows */
+  .svc-row{ border-top: 1px solid rgba(255,255,255,0.08); transition: background .3s ease; }
+  .svc-row:last-child{ border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .svc-row:hover{ background: linear-gradient(90deg, rgba(140,123,255,0.06), transparent); }
+  /* Cursor follower */
+  .cursor-glow{
+    position: fixed; width: 480px; height:480px; border-radius:9999px; pointer-events:none; z-index:1;
+    background: radial-gradient(closest-side, rgba(140,123,255,0.18), rgba(140,123,255,0));
+    transform: translate(-50%,-50%); transition: opacity .3s ease;
+    mix-blend-mode: screen;
+  }
+  /* Scroll cue */
+  .scroll-cue{ animation: cue 1.6s ease-in-out infinite; }
+  @keyframes cue { 0%,100% { transform: translateY(0); opacity:.5;} 50% { transform: translateY(8px); opacity:1; } }
+  /* Tweaks panel chrome */
+  .tw-panel{ position: fixed; right: 16px; bottom: 16px; z-index: 60; width: 280px; }
+  .tw-row{ display:flex; align-items:center; justify-content:space-between; gap: 10px; padding: 6px 0; }
+  .tw-input[type="range"]{ accent-color:#8C7BFF; width: 130px; }
+  /* Hero portrait halo (glass) */
+  .portrait-frame{ position:relative; border-radius:9999px; overflow:visible; }
+  .portrait-frame::before{
+    content:""; position:absolute; inset:-22%;
+    border-radius:9999px;
+    background: radial-gradient(closest-side, rgba(140,123,255,0.55), transparent 70%);
+    filter: blur(20px); z-index:-1;
+  }
+  .portrait-glass{
+    position:absolute; inset:-12%;
+    border-radius:9999px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 30px 60px -10px rgba(0,0,0,0.6);
+  }
+  /* Rail mask for marquee */
+  .rail-mask{
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+            mask-image: linear-gradient(90deg, transparent, black 6%, black 94%, transparent);
+  }
+  /* Hide scrollbar in marquee */
+  ::-webkit-scrollbar{ width: 10px; }
+  ::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.08); border-radius: 8px;}
+
+  /* ----- Skills Marquee ----- */
+  .skills-track{
+    display:flex; gap: 18px; width: max-content;
+    animation: skillScroll 60s linear infinite;
+    will-change: transform;
+  }
+  .skills-track:hover{ animation-play-state: paused; }
+  @keyframes skillScroll {
+    from { transform: translate3d(0,0,0); }
+    to   { transform: translate3d(-25%, 0, 0); }
+  }
+  .skill-card{
+    flex: 0 0 auto;
+    width: 180px; height: 200px;
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.16), 0 18px 40px -22px rgba(0,0,0,0.6);
+    position: relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), border-color .35s ease, box-shadow .35s ease;
+  }
+  .skill-card:hover{
+    transform: translateY(-6px) scale(1.04);
+    border-color: rgba(255,255,255,0.28);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 30px 60px -22px rgba(140,123,255,0.6);
+  }
+  .skill-glow{
+    position:absolute; inset:-30%;
+    background: radial-gradient(closest-side, rgba(140,123,255,0.35), transparent 70%);
+    opacity: 0; transition: opacity .35s ease;
+    pointer-events:none;
+  }
+  .skill-card:hover .skill-glow{ opacity: 1; }
+  .skill-img-wrap{
+    position: relative; z-index: 1;
+    width: 88px; height: 88px;
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1), opacity .35s ease;
+  }
+  .skill-card:hover .skill-img-wrap{ transform: translateY(-22px) scale(0.85); opacity: 0.9; }
+  .skill-img{ max-width:100%; max-height:100%; object-fit: contain; }
+  .skill-invert{ filter: brightness(0) invert(1) opacity(0.92); }
+  .skill-label{
+    position:absolute; left:0; right:0; bottom: 22px; text-align:center; padding: 0 12px;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity .35s ease, transform .35s cubic-bezier(.2,.7,.2,1);
+    pointer-events: none;
+  }
+  .skill-card:hover .skill-label{ opacity:1; transform: translateY(0); }
+
+  /* ----- Category Cards ----- */
+  .cat-card{
+    --h: var(--cat-hue, 264);
+    position: relative; display:block;
+    border-radius: 28px;
+    padding: 1px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,0.7);
+    overflow: hidden;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .cat-card:hover{ transform: translateY(-6px); }
+  .cat-glow{
+    position:absolute; inset:-25%;
+    background: radial-gradient(closest-side, hsl(var(--h) 90% 65% / 0.45), transparent 70%);
+    opacity: 0.25; transition: opacity .4s ease;
+    pointer-events:none;
+  }
+  .cat-card.is-active .cat-glow,
+  .cat-card:hover .cat-glow{ opacity: 0.9; }
+  .cat-inner{
+    position: relative;
+    border-radius: 27px;
+    background: linear-gradient(180deg, rgba(20,16,40,0.85), rgba(10,8,22,0.92));
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    padding: 22px;
+    min-height: 380px;
+    display:flex; flex-direction: column;
+  }
+  .cat-icon-wrap{
+    width: 120px; height: 120px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 20px 50px -20px hsl(var(--h) 80% 55% / 0.55);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1);
+  }
+  .cat-card:hover .cat-icon-wrap{ transform: translateY(-4px) rotate(-3deg); }
+  .cat-icon{ width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 4px 14px hsl(var(--h) 90% 70% / 0.45)); }
+  .cat-arrow{
+    display:inline-flex; align-items:center; justify-content:center;
+    width: 36px; height: 36px; border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,0.18);
+    color: white; transition: transform .3s ease, background .3s ease, border-color .3s ease;
+  }
+  .cat-card:hover .cat-arrow{ background: hsl(var(--h) 80% 60% / 0.4); border-color: rgba(255,255,255,0.45); transform: translateX(4px); }
+
+  /* Certifications view / lightbox */
+  .cert-card .cert-view{
+    position:absolute; inset:0; border:0; background:transparent; padding:0;
+    display:flex; align-items:flex-start; justify-content:flex-end;
+    opacity:0; transition:opacity .18s ease; pointer-events:none;
+  }
+  .cert-card:hover .cert-view{ opacity:1; }
+  .cert-view-pill{
+    pointer-events:auto; margin:10px; cursor:zoom-in;
+    font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#fff;
+    background:rgba(10,8,20,0.72); border:1px solid rgba(255,255,255,0.18);
+    padding:6px 12px; border-radius:9999px; backdrop-filter:blur(6px);
+  }
+  .cert-view-pill:hover{ background:rgba(10,8,20,0.9); border-color:rgba(255,255,255,0.35); }
+  .cert-lightbox{
+    position:fixed; inset:0; z-index:60; background:rgba(6,5,11,0.9);
+    backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center;
+    padding:5vh 5vw; cursor:zoom-out; animation:certfade .18s ease;
+  }
+  .cert-lightbox img{
+    max-width:100%; max-height:100%; border-radius:12px;
+    box-shadow:0 30px 90px rgba(0,0,0,0.6); cursor:default;
+  }
+  .cert-lightbox-close{
+    position:fixed; top:22px; right:24px; color:#fff; cursor:pointer;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2);
+    padding:8px 14px; border-radius:9999px;
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+  }
+  .cert-lightbox-close:hover{ background:rgba(255,255,255,0.16); }
+  @keyframes certfade{ from{opacity:0} to{opacity:1} }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="env,react">
+
+
+
+
+
+const { useState, useEffect, useRef, useMemo } = React;
+
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "glassStrength": 22,
+  "showOrbit": true,
+  "showCursor": true
+}/*EDITMODE-END*/;
+
+/* ---------- Hooks & utils ---------- */
+function useReveal() {
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll('.reveal'));
+    els.forEach((el) => el.classList.add('pre'));
+    const reveal = (el) => requestAnimationFrame(() => {el.classList.remove('pre');el.classList.add('in');});
+    const check = () => {
+      const vh = window.innerHeight;
+      els.forEach((el) => {
+        if (!el.classList.contains('pre')) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.92 && r.bottom > 0) reveal(el);
+      });
+    };
+    requestAnimationFrame(() => requestAnimationFrame(check));
+    window.addEventListener('scroll', check, { passive: true });
+    let io;
+    try {
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {if (e.isIntersecting) {reveal(e.target);io.unobserve(e.target);}});
+      }, { threshold: 0.05 });
+      els.forEach((el) => io.observe(el));
+    } catch (_) {}
+    const t = setTimeout(() => {els.forEach((el) => {el.classList.remove('pre');el.classList.add('in');});}, 2000);
+    return () => {if (io) io.disconnect();window.removeEventListener('scroll', check);clearTimeout(t);};
+  }, []);
+}
+
+function useScroll() {
+  const [y, setY] = useState(0);
+  useEffect(() => {
+    const onScroll = () => setY(window.scrollY);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return y;
+}
+
+/* Magnetic hover */
+function Magnet({ children, strength = 4, padding = 120, className = "", style = {} }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;if (!el) return;
+    let active = false;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2,cy = r.top + r.height / 2;
+      const dx = e.clientX - cx,dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      const max = Math.max(r.width, r.height) / 2 + padding;
+      if (dist < max) {
+        active = true;
+        el.style.transition = 'transform 0.3s ease-out';
+        el.style.transform = `translate3d(${dx / strength}px, ${dy / strength}px, 0)`;
+      } else if (active) {
+        active = false;
+        el.style.transition = 'transform 0.6s ease-in-out';
+        el.style.transform = 'translate3d(0,0,0)';
+      }
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, [strength, padding]);
+  return <div ref={ref} className={className} style={{ willChange: 'transform', ...style }}>{children}</div>;
+}
+
+/* Cursor glow */
+function CursorGlow({ enabled }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;if (!el) return;
+    const onMove = (e) => {el.style.left = e.clientX + 'px';el.style.top = e.clientY + 'px';};
+    if (enabled) {
+      window.addEventListener('mousemove', onMove);
+      el.style.opacity = 1;
+    } else {
+      el.style.opacity = 0;
+    }
+    return () => window.removeEventListener('mousemove', onMove);
+  }, [enabled]);
+  return <div ref={ref} className="cursor-glow" />;
+}
+
+/* ---------- NAV ---------- */
+function Nav() {
+  const links = ['Work', 'About', 'Experience', 'Skills', 'Certs', 'Contact'];
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onS = () => setScrolled(window.scrollY > 12);
+    window.addEventListener('scroll', onS, { passive: true });
+    return () => window.removeEventListener('scroll', onS);
+  }, []);
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-40 transition-all ${scrolled ? 'py-3' : 'py-5'}`}>
+      <div className="mx-auto max-w-[1400px] px-6 md:px-10 flex items-center justify-between">
+        <div className={`flex items-center gap-3 ${scrolled ? 'glass rounded-full px-4 py-2' : ''}`}>
+          <div className="w-7 h-7 rounded-md relative" style={{
+            background: 'conic-gradient(from 200deg, #6C5CE7, #C24BFF, #FF9D5C, #6C5CE7)',
+            boxShadow: '0 0 20px rgba(140,123,255,0.5)'
+          }}>
+            <div className="absolute inset-[3px] rounded-[5px] bg-[#0a0814] flex items-center justify-center mono text-[10px] tracking-widest text-white/80">HY</div>
+          </div>
+          <div className="leading-tight">
+            <div className="text-sm font-medium tracking-wide">Hemanth Yarramsetti</div>
+            <div className="mono text-[10px] uppercase tracking-[0.18em] text-white/45">3D · XR · Game Dev</div>
+          </div>
+        </div>
+        <div className={`hidden md:flex items-center gap-1 px-2 py-1 rounded-full ${scrolled ? 'glass' : ''}`}>
+          {links.map((l) =>
+          <a key={l} href={`#${l.toLowerCase()}`} className="px-4 py-2 text-sm uppercase tracking-[0.18em] text-white/75 hover:text-white transition-colors relative group">
+              {l}
+              <span className="absolute left-4 right-4 -bottom-0.5 h-px bg-gradient-to-r from-transparent via-violet-300 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+            </a>
+          )}
+        </div>
+        <a href="#contact" className="btn-ghost hidden sm:inline-flex">Let's talk</a>
+      </div>
+    </nav>);
+
+}
+
+/* ---------- HERO ---------- */
+function Hero({ tweaks }) {
+  return (
+    <section id="top" className="relative min-h-screen flex flex-col px-5 sm:px-8 md:px-10 pt-28 pb-10">
+      <div className="grid-veil"></div>
+
+      <div className="flex-1 flex flex-col justify-center items-center text-center relative">
+        <div className="reveal mb-6">
+          <span className="pill"><span className="dot"></span> Cleveland, OH</span>
+        </div>
+        <h1 className="reveal accent-heading font-black uppercase leading-[0.9] tracking-tight" style={{
+          textWrap: 'balance', fontSize: "80px"
+        }}>
+          3D Technical Artist<br />/ XR Dev
+        </h1>
+        <p className="reveal mt-8 max-w-xl text-white/70 text-base md:text-lg leading-relaxed" style={{ transitionDelay: '0.2s' }}>
+          I build interactive worlds where shaders, gameplay and XR interaction meet turning ideas into experiences that feel responsive, tactile and alive.
+        </p>
+
+        {/* Portrait bar */}
+        <div className="reveal mt-10 md:mt-14 flex items-center gap-6 md:gap-10" style={{ transitionDelay: '0.35s' }}>
+          <Magnet strength={6} padding={80}>
+            <div className="portrait-frame w-[140px] h-[140px] md:w-[180px] md:h-[180px] rounded-full">
+              {tweaks.showOrbit && <div className="orbit"></div>}
+              <div className="portrait-glass"></div>
+              <img src="assets/me.png" alt="Portrait" className="absolute inset-0 w-full h-full object-cover rounded-full" style={{
+                background: 'radial-gradient(closest-side, rgba(140,123,255,0.25), transparent 70%)'
+              }} />
+            </div>
+          </Magnet>
+          <div className="flex flex-col items-start gap-3">
+            <div className="mono text-[11px] uppercase tracking-[0.2em] text-white/55">Currently</div>
+            <div className="text-lg md:text-xl">MS Computer Science · CSU</div>
+            <div className="flex items-center gap-3 mt-1">
+              <a href="#work" className="btn-ghost">View work</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- SKILLS MARQUEE ---------- */
+const SKILLS = [
+{ name: 'Maya', src: 'assets/skills/maya.jpg', blend: 'normal' },
+{ name: 'Substance Painter', src: 'assets/skills/substance.svg', blend: 'normal' },
+{ name: 'Arnold', src: 'assets/skills/arnold.png', blend: 'normal' },
+{ name: 'Fusion 360', src: 'assets/skills/fusion.png', blend: 'normal' },
+{ name: 'Photoshop', src: 'assets/skills/photoshop.svg', blend: 'normal' },
+{ name: 'Figma', src: 'assets/skills/figma.png', blend: 'normal' },
+{ name: 'Unity', src: 'assets/skills/unity.svg', blend: 'invert' },
+{ name: 'Unreal Engine', src: 'assets/skills/unreal.svg', blend: 'invert' },
+{ name: 'C#', src: 'assets/skills/csharp.svg', blend: 'normal' },
+{ name: 'C++', src: 'assets/skills/cplus.svg', blend: 'normal' },
+{ name: 'Python', src: 'assets/skills/python.png', blend: 'normal' },
+{ name: 'NVIDIA', src: 'assets/skills/nvidia.svg', blend: 'normal' }];
+
+
+function SkillsMarquee() {
+  const loop = useMemo(() => [...SKILLS, ...SKILLS, ...SKILLS, ...SKILLS], []);
+  return (
+    <section id="toolbelt" className="relative py-24 md:py-32 overflow-hidden">
+      <div className="px-5 sm:px-8 md:px-10 mb-10 flex items-end justify-between">
+        <div className="reveal">
+          <div className="mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-2">Toolbelt · 12</div>
+          <h2 className="text-3xl md:text-5xl font-bold">Software & languages I live in</h2>
+        </div>
+        <div className="hidden md:flex items-center gap-2 reveal">
+          <span className="pill"><span className="dot"></span> Hover to check</span>
+        </div>
+      </div>
+
+      <div className="rail-mask">
+        <div className="skills-track">
+          {loop.map((s, i) =>
+          <div key={i} className="skill-card" aria-label={s.name}>
+              <div className="skill-glow"></div>
+              <div className="skill-img-wrap">
+                <img src={s.src} alt={s.name} className={`skill-img ${s.blend === 'invert' ? 'skill-invert' : ''}`} loading="lazy" />
+              </div>
+              <div className="skill-label">
+                <div className="text-base md:text-lg font-medium">{s.name}</div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- ABOUT ---------- */
+function About() {
+  const ref = useRef(null);
+  const y = useScroll();
+  const text = "Master's student in Computer Science at Cleveland State University with 4+ years of experience shaping interactive experiences across AR/VR, real-time rendering, and stylized 3D. I'm passionate about building immersive worlds where creativity meets engineering  from shader graphs and gameplay systems to XR interactions that feel intuitive, engaging, and alive. My work spans Unity, Unreal Engine, AR/VR simulations, and human-robot interaction research, with a focus on blending design, logic, and user experience to create meaningful digital experiences.";
+  const chars = useMemo(() => text.split(''), []);
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    if (!ref.current) return;
+    const r = ref.current.getBoundingClientRect();
+    const start = window.innerHeight * 0.8;
+    const end = window.innerHeight * 0.2;
+    const total = r.height + (start - end);
+    const traveled = Math.max(0, start - r.top);
+    setProgress(Math.min(1, traveled / total));
+  }, [y]);
+  return (
+    <section id="about" className="relative px-5 sm:px-8 md:px-10 py-32 md:py-44">
+      {/* Decorative glass shapes */}
+      <div className="hidden md:block absolute top-12 left-[4%] reveal">
+        <div className="glass rounded-3xl w-32 h-32 relative flex items-center justify-center">
+          <div className="glass-shine"></div>
+          <div className="w-12 h-12 rounded-xl rotate-12" style={{ background: 'linear-gradient(135deg,#8C7BFF,#C24BFF)', boxShadow: '0 10px 30px rgba(140,123,255,0.5)' }}></div>
+        </div>
+      </div>
+      <div className="hidden md:block absolute bottom-16 left-[10%] reveal">
+        <div className="glass rounded-full w-24 h-24 relative flex items-center justify-center">
+          <div className="glass-shine"></div>
+          <div className="w-12 h-12 rounded-full" style={{ background: 'radial-gradient(circle at 30% 30%, #FFD08C, #FF9D5C 60%, #C24BFF)' }}></div>
+        </div>
+      </div>
+      <div className="hidden md:block absolute bottom-20 right-[6%] reveal">
+        <div className="glass rounded-3xl w-44 h-32 relative p-4">
+          <div className="glass-shine"></div>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-white/55">Years</div>
+          <div className="text-5xl font-black hero-heading leading-none mt-1">04+</div>
+          <div className="mono text-[10px] uppercase tracking-[0.2em] text-white/55 absolute bottom-3 right-4">in 3D · XR</div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="reveal hero-heading font-black uppercase leading-none tracking-tight" style={{ fontSize: 'clamp(3rem, 12vw, 10rem)' }}>About</h2>
+        <p ref={ref} className="mt-10 md:mt-14 text-lg md:text-2xl leading-relaxed text-white/85" style={{ textWrap: 'pretty' }}>
+          {chars.map((c, i) => {
+            const charProg = i / chars.length;
+            const lit = progress > charProg - 0.05;
+            return <span key={i} className="char" style={{ opacity: lit ? 1 : 0.18, color: lit ? 'white' : 'rgba(255,255,255,0.6)' }}>{c}</span>;
+          })}
+        </p>
+        <div className="reveal mt-14 flex items-center justify-center gap-3 flex-wrap">
+          <a href="#contact" className="btn-primary">Get in touch</a>
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- EXPERIENCE ---------- */
+const EXPERIENCE = [
+{ role: 'Research Assistant', org: 'Cleveland State University', type: 'Part-time', period: 'Aug 2024 – Present', duration: '2 years 1 month', location: 'Cleveland, Ohio, United States · On-site', desc: "Mixed Reality & MetaHuman Interaction\nBuilt a MetaHuman-based virtual instructor in Unreal Engine that guides users through robot stacking tasks in AR/VR. Designed the agent's interaction flow, speech behavior, and spatial presence for natural, responsive communication. Deployed interactive environments on Meta Quest, supporting ongoing research in human-robot interaction and human-centered computing.\n\nReal-Time Embedded Systems & Physical Prototyping\nResearching real-time embedded systems alongside Mixed Reality, game engines, and human-in-the-loop interfaces — focusing on latency-aware behavior, timing guarantees, and formal verification. Designing 3D-printed enclosures and hardware mounts that bridge software with physical systems. Contributing to a drone build spanning embedded controllers, sensors, and real-time decision-making.\n\nBIM, VR & Digital Construction\nCreated Revit BIM models and exported them into Unity for immersive VR walkthroughs, presented through a Visbox CAVE system. Converted BIM data into 3D-printable architectural models for client presentations. Worked with Procore and Autodesk Forma for scheduling, cost tracking, and project visualization workflows." },
+{ role: '3D Artist', org: 'Nextech3D.AI', type: 'Full-time', period: 'Aug 2023 – Sep 2023', duration: '2 months', location: 'India · Remote', desc: 'Created optimized real-time 3D assets for e-commerce visualization, which will be used in augmented reality.' },
+{ role: '3D Junior Artist', org: 'Amazon', type: 'Full-time', period: 'May 2022 – Jul 2023', duration: '1 year 3 months', location: 'Hyderabad, Telangana, India', desc: "I had the opportunity to contribute to Amazon's cutting-edge e-commerce augmented technology by designing and developing dynamic 3D assets that enhance the user experience." },
+{ role: '3D Technical Artist', org: 'Imaginate | Collaborate in VR/AR', type: 'Full-time', period: 'Aug 2020 – Oct 2021', duration: '1 year 3 months', location: 'Hyderabad, Telangana, India', desc: 'Worked on creating 3d assets and 3d environments for AR/VR platforms. Scripting tools for automation in Unity.\nAlso worked as a 3D QA for the VR platform.' }];
+
+
+function Experience() {
+  return (
+    <section id="experience" className="relative px-5 sm:px-8 md:px-10 py-24 md:py-36">
+      <div className="max-w-[1300px] mx-auto">
+        <div className="flex items-end justify-between mb-12 md:mb-20 flex-wrap gap-6">
+          <div>
+            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Career</div>
+            <h2 className="reveal hero-heading font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>Experience</h2>
+          </div>
+        </div>
+
+        <div className="reveal glass rounded-[28px] md:rounded-[36px] overflow-hidden relative">
+          <div className="glass-shine"></div>
+          {EXPERIENCE.map((e, i) =>
+          <div key={e.role + i} className="exp-row grid grid-cols-12 gap-4 md:gap-8 px-6 md:px-10 py-8 md:py-10 items-start" style={{ borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="col-span-12 md:col-span-4">
+                <div className="text-white text-lg md:text-xl font-semibold">{e.role}</div>
+                <div className="text-white/60 text-sm md:text-base mt-1">{e.org} · {e.type}</div>
+              </div>
+              <div className="col-span-12 md:col-span-2 mono text-white/50 text-xs md:text-sm">
+                <div>{e.period}</div>
+                {i === 0 ?
+              <div className="text-white/40 text-xs md:text-sm mt-1">{e.location}</div> :
+
+              <div className="text-white/35 mt-1">{e.duration}</div>}
+
+              </div>
+              {i === 0 ?
+            <>
+                  <div className="col-span-12 md:col-span-6 mono text-white/35 text-xs md:text-sm md:text-right">{e.duration}</div>
+                  <p className="col-span-12 text-white/70 text-sm md:text-base leading-relaxed" style={{ whiteSpace: 'pre-line' }}>{e.desc}</p>
+                </> :
+
+            <div className="col-span-12 md:col-span-6">
+                  <div className="text-white/40 text-xs md:text-sm mb-2">{e.location}</div>
+                  <p className="text-white/70 text-sm md:text-base leading-relaxed" style={{ whiteSpace: 'pre-line' }}>{e.desc}</p>
+                </div>}
+
+            </div>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- SKILLS / SERVICES ---------- */
+function Skills() {
+  const items = [
+  { n: '01', name: 'XR Development', desc: 'Hand-tracking, locomotion and interaction systems for Quest, Vision Pro and WebXR — built around presence, comfort and clarity.', tags: ['Unity XR', 'OpenXR', 'WebXR', 'Unreal XR'] },
+  { n: '02', name: 'Real-time Rendering', desc: 'Shader Graph, HLSL/GLSL and OpenGL pipelines from PBR lookdev to stylized post effects and volumetric work.', tags: ['Shader Graph', 'HLSL', 'OpenGL'] },
+  { n: '03', name: 'Gameplay & Interaction', desc: 'Tight, readable mechanics and AI behaviors using C# and C++  prototypes that feel alive.', tags: ['Unity', 'Unreal', 'C++', 'C#'] },
+  { n: '04', name: '3D & Lookdev', desc: 'Modeling, PBR texturing and lighting in Maya & Substance production-ready assets with clean topology.', tags: ['Maya', 'Substance', 'Lookdev', 'Arnold'] },
+  { n: '05', name: 'Tools & Pipelines', desc: 'Editor extensions, automation and QA scripting in Python and C# — getting boring work out of the way.', tags: ['Python', 'Editor Tools', 'QA'] }];
+
+  return (
+    <section id="skills" className="relative px-5 sm:px-8 md:px-10 py-24 md:py-36">
+      <div className="max-w-[1300px] mx-auto">
+        <div className="flex items-end justify-between mb-12 md:mb-20 flex-wrap gap-6">
+          <div>
+            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">What I do</div>
+            <h2 className="reveal hero-heading font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>Capabilities</h2>
+          </div>
+          <p className="reveal max-w-md text-white/65 text-base md:text-lg">Five disciplines I move between fluidly — most projects pull from at least three.</p>
+        </div>
+
+        <div className="reveal glass rounded-[28px] md:rounded-[36px] overflow-hidden relative">
+          <div className="glass-shine"></div>
+          {items.map((it) =>
+          <div key={it.n} className="svc-row group grid grid-cols-12 gap-4 md:gap-8 px-6 md:px-10 py-8 md:py-10 items-center">
+              <div className="col-span-2 md:col-span-2 mono text-white/50 text-sm md:text-base">{it.n}</div>
+              <div className="col-span-10 md:col-span-4">
+                <div className="font-medium uppercase tracking-wide text-xl md:text-3xl" style={{ textWrap: 'balance' }}>{it.name}</div>
+              </div>
+              <div className="col-span-12 md:col-span-4 text-white/60 text-sm md:text-base leading-relaxed">{it.desc}</div>
+              <div className="col-span-12 md:col-span-2 flex md:justify-end gap-1.5 flex-wrap">
+                {it.tags.map((t) => <span key={t} className="mono text-[10px] uppercase tracking-[0.12em] text-white/70 px-2 py-1 rounded-full border border-white/10 bg-white/5">{t}</span>)}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- PROJECTS — 3 CATEGORY CARDS ---------- */
+const CATEGORIES = [
+{ id: '3d', label: '3D', sub: 'Modeling · Lookdev · Lighting', icon: 'assets/icons/3d.png', hue: 264 },
+{ id: 'gamedev', label: 'Game Dev', sub: 'Shaders · Mechanics · AI · Tools', icon: 'assets/icons/gamepad.png', hue: 28 },
+{ id: 'xr', label: 'XR', sub: 'Meta Quest · WebXR', icon: 'assets/icons/vr.png', hue: 200 }];
+
+
+function Projects() {
+  const [active, setActive] = useState(0);
+  return (
+    <section id="work" className="relative px-5 sm:px-8 md:px-10 pt-0 pb-24 md:pb-36">
+      <div className="max-w-[1300px] mx-auto">
+        <div className="flex items-end justify-between mb-12 md:mb-16 flex-wrap gap-6">
+          <div>
+            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Pick a track · 03</div>
+            <h2 className="reveal hero-heading font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>Projects</h2>
+          </div>
+          <p className="reveal max-w-md text-white/65 text-base md:text-lg">Three disciplines, three case-study tracks. Tap any card to dive into the work.</p>
+        </div>
+
+        <div className="reveal grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
+          {CATEGORIES.map((c, i) =>
+          <a key={c.id} href={`pages/${c.id}.html`}
+          onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)}
+          className={`cat-card ${active === i ? 'is-active' : ''}`}
+          style={{ ['--cat-hue']: c.hue }}>
+              <div className="cat-glow"></div>
+              <div className="glass-shine"></div>
+              <div className="cat-inner">
+                <div className="flex items-start justify-between">
+                  <div className="mono text-[10px] uppercase tracking-[0.22em] text-white/55">{String(i + 1).padStart(2, '0')} / {String(CATEGORIES.length).padStart(2, '0')}</div>
+                  <div className="mono text-[10px] uppercase tracking-[0.22em] text-white/55"></div>
+                </div>
+
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-10">
+                  <div className="cat-icon-wrap">
+                    <img src={c.icon} alt={c.label} className="cat-icon" />
+                  </div>
+                  <div className="mt-6 text-3xl md:text-4xl font-black tracking-tight uppercase">{c.label}</div>
+                  <div className="mt-2 mono text-[10px] uppercase tracking-[0.22em] text-white/60">{c.sub}</div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="mono text-[10px] uppercase tracking-[0.22em] text-white/65">Open track</span>
+                  <span className="cat-arrow">→</span>
+                </div>
+              </div>
+            </a>
+          )}
+        </div>
+      </div>
+    </section>);
+
+}
+
+/* ---------- CERTIFICATIONS ---------- */
+const CERTS = [
+{ id: 'cert-01', label: 'Certificate 01', note: 'Drop certificate' },
+{ id: 'cert-02', label: 'Certificate 02', note: 'Drop certificate' },
+{ id: 'cert-03', label: 'Certificate 03', note: 'Drop certificate' },
+{ id: 'cert-04', label: 'Certificate 04', note: 'Drop certificate' },
+{ id: 'cert-05', label: 'Certificate 05', note: 'Drop certificate' },
+{ id: 'cert-06', label: 'Certificate 06', note: 'Drop certificate' }];
+
+
+function Certifications() {
+  const [view, setView] = useState(null);
+
+  const openView = (id) => {
+    const el = document.getElementById(id);
+    const img = el && el.shadowRoot && el.shadowRoot.querySelector('.frame img');
+    const src = img && img.getAttribute('src');
+    if (src) setView(src);
+  };
+
+  useEffect(() => {
+    if (!view) return;
+    const onKey = (e) => { if (e.key === 'Escape') setView(null); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [view]);
+
+  return (
+    <section id="certs" className="relative px-5 sm:px-8 md:px-10 pt-[71px] pb-8 md:pb-12">
+      <div className="max-w-[1300px] mx-auto">
+        <div className="flex items-end justify-between mb-12 md:mb-20 flex-wrap gap-6">
+          <div>
+            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Credentials</div>
+            <h2 className="reveal hero-heading font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>Certifications</h2>
+          </div>
+        </div>
+
+        <div className="reveal flex flex-wrap justify-center gap-5 md:gap-7">
+          {CERTS.map((c) =>
+          <div key={c.id} className="cert-card glass rounded-[22px] md:rounded-[26px] p-3 relative overflow-hidden" style={{ flex: '0 0 auto', maxWidth: '100%' }}>
+              <div className="glass-shine"></div>
+              <div className="relative" style={{ width: 'min(640px, 100%)' }}>
+                <image-slot
+                  id={c.id}
+                  shape="rounded"
+                  radius="16"
+                  fit="contain"
+                  placeholder={c.note}
+                  style={{ display: 'block', width: '100%', aspectRatio: '640 / 495', background: '#0a0816' }}></image-slot>
+                <button
+                  className="cert-view"
+                  onClick={() => openView(c.id)}
+                  aria-label={`View ${c.label}`}>
+                  <span className="cert-view-pill mono">View ↗</span>
+                </button>
+              </div>
+              <div className="flex items-center justify-between mt-3 px-1">
+                <span className="mono text-[10px] uppercase tracking-[0.2em] text-white/55">{c.label}</span>
+                <span className="text-white/30">↗</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {view &&
+      <div className="cert-lightbox" onClick={() => setView(null)}>
+        <img src={view} alt="Certificate" onClick={(e) => e.stopPropagation()} />
+        <button className="cert-lightbox-close mono" onClick={() => setView(null)} aria-label="Close">Close ✕</button>
+      </div>}
+    </section>);
+
+}
+
+/* ---------- CONTACT ---------- */
+function Contact() {
+  const [copied, setCopied] = useState(false);
+  const email = 'hemanththyagi@gmail.com';
+  return (
+    <section id="contact" className="relative px-5 sm:px-8 md:px-10 pt-[71px] pb-24 md:pb-36">
+      <div className="max-w-[1100px] mx-auto">
+        <div className="reveal glass rounded-[32px] md:rounded-[44px] p-8 md:p-14 relative overflow-hidden">
+          <div className="glass-shine"></div>
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full" style={{
+            filter: 'blur(20px)', height: "342px", background: "radial-gradient(closest-side, rgba(194, 75, 255, 0.35), transparent 70%) center bottom"
+          }}></div>
+          <div className="grid grid-cols-12 gap-8 relative">
+            <div className="col-span-12 md:col-span-7">
+              <div className="mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Open to roles · 2026</div>
+              <h2 className="font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(2.5rem, 7vw, 6rem)' }}>
+                <span className="hero-heading">Let's build</span><br />
+                <span className="accent-heading">something alive.</span>
+              </h2>
+              <p className="mt-6 text-white/65 max-w-md text-base md:text-lg">I love working at the seam of art and engineering. Let's get in touch.</p>
+              <div className="flex flex-wrap items-center gap-3 mt-8">
+                <button onClick={() => {navigator.clipboard.writeText(email);setCopied(true);setTimeout(() => setCopied(false), 1600);}} className="btn-primary">
+                  {copied ? '✓ Copied' : '✓ Copied'}
+                </button>
+              </div>
+            </div>
+            <div className="col-span-12 md:col-span-5 flex flex-col gap-3" style={{ height: "347px", textAlign: "left", borderWidth: "0px", margin: "0px", padding: "5px", justifyContent: "center" }}>
+              {[
+              ['Email', email, `mailto:${email}`],
+              ['Phone', '+1 (216) 640-5166', 'tel:+12166405166'],
+              ['Location', 'Cleveland, OH · USA', '#']].
+              map(([k, v, h]) =>
+              <a key={k} href={h} className="glass-soft rounded-2xl px-5 py-4 flex items-center justify-between group hover:border-white/20 transition-colors">
+                  <div>
+                    <div className="mono text-[10px] uppercase tracking-[0.2em] text-white/50">{k}</div>
+                    <div className="mt-1">{v}</div>
+                  </div>
+                  <span className="text-white/40 group-hover:text-white transition-colors">↗</span>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <footer className="mt-12 flex items-center justify-between flex-wrap gap-3 text-white/45 mono text-[11px] uppercase tracking-[0.2em]">
+          <div>© 2026 Hemanth Yarramsetti</div>
+          <div>Cleveland, OH</div>
+        </footer>
+      </div>
+    </section>);
+
+}
+
+/* ---------- TWEAKS ---------- */
+function Tweaks({ tweaks, setTweaks }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const onMsg = (e) => {
+      if (!e.data || !e.data.type) return;
+      if (e.data.type === '__activate_edit_mode') setOpen(true);
+      if (e.data.type === '__deactivate_edit_mode') setOpen(false);
+    };
+    window.addEventListener('message', onMsg);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', onMsg);
+  }, []);
+  const persist = (patch) => {
+    setTweaks((t) => ({ ...t, ...patch }));
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: patch }, '*');
+  };
+  if (!open) return null;
+  return (
+    <div className="tw-panel">
+      <div className="glass rounded-2xl p-4 relative">
+        <div className="glass-shine"></div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="mono text-[11px] uppercase tracking-[0.2em] text-white/65">Tweaks</div>
+          <button className="text-white/55 hover:text-white" onClick={() => {setOpen(false);window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');}}>✕</button>
+        </div>
+        <div className="tw-row">
+          <span className="text-sm text-white/75">Glass blur</span>
+          <input className="tw-input" type="range" min="6" max="40" value={tweaks.glassStrength} onChange={(e) => {
+            const v = +e.target.value;
+            document.documentElement.style.setProperty('--glass-blur', v + 'px');
+            persist({ glassStrength: v });
+          }} />
+        </div>
+        <div className="tw-row">
+          <span className="text-sm text-white/75">Orbit ring</span>
+          <input type="checkbox" checked={tweaks.showOrbit} onChange={(e) => persist({ showOrbit: e.target.checked })} />
+        </div>
+        <div className="tw-row">
+          <span className="text-sm text-white/75">Cursor glow</span>
+          <input type="checkbox" checked={tweaks.showCursor} onChange={(e) => persist({ showCursor: e.target.checked })} />
+        </div>
+      </div>
+    </div>);
+
+}
+
+/* ---------- APP ---------- */
+function App() {
+  const [tweaks, setTweaks] = useState(TWEAKS);
+  useReveal();
+  useEffect(() => {
+    document.documentElement.style.setProperty('--glass-blur', tweaks.glassStrength + 'px');
+  }, [tweaks.glassStrength]);
+  return (
+    <div className="relative">
+      <div className="nebula"></div>
+      <CursorGlow enabled={tweaks.showCursor} />
+      <Nav />
+      <main className="relative z-10">
+        <Hero tweaks={tweaks} />
+        <SkillsMarquee />
+        <About />
+        <Experience />
+        <Skills />
+        <Projects />
+        <Certifications />
+        <Contact />
+      </main>
+      <Tweaks tweaks={tweaks} setTweaks={setTweaks} />
+    </div>);
+
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+</script>
+</body>
+</html>
