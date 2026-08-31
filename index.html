@@ -836,7 +836,7 @@ function Contact() {
               <p className="mt-6 text-white/65 max-w-md text-base md:text-lg">I love working at the seam of art and engineering. Let's get in touch.</p>
               <div className="flex flex-wrap items-center gap-3 mt-8">
                 <button onClick={() => {navigator.clipboard.writeText(email);setCopied(true);setTimeout(() => setCopied(false), 1600);}} className="btn-primary">
-                  {copied ? '✓ Copied' : '✓ Copied'}
+                  {copied ? '✓ Copied' : 'Copy email'}
                 </button>
               </div>
             </div>
