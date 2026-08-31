@@ -742,23 +742,16 @@ function Projects() {
 
 /* ---------- CERTIFICATIONS ---------- */
 const CERTS = [
-{ id: 'cert-01', label: 'Certificate 01', note: 'Drop certificate' },
-{ id: 'cert-02', label: 'Certificate 02', note: 'Drop certificate' },
-{ id: 'cert-03', label: 'Certificate 03', note: 'Drop certificate' },
-{ id: 'cert-04', label: 'Certificate 04', note: 'Drop certificate' },
-{ id: 'cert-05', label: 'Certificate 05', note: 'Drop certificate' },
-               { id: 'cert-06', label: 'AR/VR/MR/XR — U of Michigan', note: 'Drop certificate', src: 'uploads/cert-06.png' }];
+{ id: 'cert-01', label: 'C++ for Unreal — U of Colorado', src: 'uploads/C___Programming_for_unreal-1.png' },
+{ id: 'cert-02', label: 'Intro to Game Dev — Michigan State', src: 'uploads/Intro_to_Game_Development-1.png' },
+{ id: 'cert-03', label: 'Intro to Game Design — CalArts', src: 'uploads/Intro_to_Game_Design-1.png' },
+{ id: 'cert-04', label: 'Intro to XR — U of Michigan', src: 'uploads/Cert-04.png' },
+{ id: 'cert-05', label: 'UX Design for XR — U of Michigan', src: 'uploads/Cert-05.png' },
+{ id: 'cert-06', label: 'AR/VR/MR/XR Apps — U of Michigan', src: 'uploads/cert-06.png' }];
 
 
 function Certifications() {
   const [view, setView] = useState(null);
-
-  const openView = (id) => {
-    const el = document.getElementById(id);
-    const img = el && el.shadowRoot && el.shadowRoot.querySelector('.frame img');
-    const src = img && img.getAttribute('src');
-    if (src) setView(src);
-  };
 
   useEffect(() => {
     if (!view) return;
@@ -777,25 +770,20 @@ function Certifications() {
           </div>
         </div>
 
-        <div className="reveal flex flex-wrap justify-center gap-5 md:gap-7">
+        <div className="reveal" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:'20px' }}>
           {CERTS.map((c) =>
-          <div key={c.id} className="cert-card glass rounded-[22px] md:rounded-[26px] p-3 relative overflow-hidden" style={{ flex: '0 0 auto', maxWidth: '100%' }}>
+          <div key={c.id} className="cert-card glass rounded-[18px] md:rounded-[22px] p-2.5 relative overflow-hidden cursor-pointer" onClick={() => c.src && setView(c.src)}>
               <div className="glass-shine"></div>
-              <div className="relative" style={{ width: 'min(640px, 100%)' }}>
-                     {c.src
-                       ? <img src={c.src} alt={c.label} style={{ display:'block', width:'100%', aspectRatio:'640/495', objectFit:'contain', background:'#0a0816', borderRadius:'16px' }} />
-                       : <div style={{ display:'flex', alignItems:'center', justifyContent:'center', width:'100%', aspectRatio:'640/495', background:'#0a0816', borderRadius:'16px', color:'rgba(255,255,255,0.25)', fontSize:'14px' }}>Coming soon</div>
-                     }
-                <button
-                  className="cert-view"
-                  onClick={() => openView(c.id)}
-                  aria-label={`View ${c.label}`}>
-                  <span className="cert-view-pill mono">View ↗</span>
-                </button>
+              <div className="relative">
+                {c.src
+                  ? <img src={c.src} alt={c.label} style={{ display:'block', width:'100%', aspectRatio:'640/495', objectFit:'contain', background:'#0a0816', borderRadius:'12px' }} />
+                  : <div style={{ display:'flex', alignItems:'center', justifyContent:'center', width:'100%', aspectRatio:'640/495', background:'#0a0816', borderRadius:'12px', color:'rgba(255,255,255,0.25)', fontSize:'13px' }}>Coming soon</div>
+                }
+                {c.src && <div className="cert-view"><span className="cert-view-pill mono">View ↗</span></div>}
               </div>
-              <div className="flex items-center justify-between mt-3 px-1">
-                <span className="mono text-[10px] uppercase tracking-[0.2em] text-white/55">{c.label}</span>
-                <span className="text-white/30">↗</span>
+              <div className="flex items-center justify-between mt-2 px-1">
+                <span className="mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/55">{c.label}</span>
+                {c.src && <span className="text-white/30 text-sm">↗</span>}
               </div>
             </div>
           )}
