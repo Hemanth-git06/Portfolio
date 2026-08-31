@@ -747,7 +747,7 @@ const CERTS = [
 { id: 'cert-03', label: 'Certificate 03', note: 'Drop certificate' },
 { id: 'cert-04', label: 'Certificate 04', note: 'Drop certificate' },
 { id: 'cert-05', label: 'Certificate 05', note: 'Drop certificate' },
-{ id: 'cert-06', label: 'Certificate 06', note: 'Drop certificate' }];
+               { id: 'cert-06', label: 'AR/VR/MR/XR — U of Michigan', note: 'Drop certificate', src: 'uploads/cert-06.png' }];
 
 
 function Certifications() {
@@ -782,13 +782,10 @@ function Certifications() {
           <div key={c.id} className="cert-card glass rounded-[22px] md:rounded-[26px] p-3 relative overflow-hidden" style={{ flex: '0 0 auto', maxWidth: '100%' }}>
               <div className="glass-shine"></div>
               <div className="relative" style={{ width: 'min(640px, 100%)' }}>
-                <image-slot
-                  id={c.id}
-                  shape="rounded"
-                  radius="16"
-                  fit="contain"
-                  placeholder={c.note}
-                  style={{ display: 'block', width: '100%', aspectRatio: '640 / 495', background: '#0a0816' }}></image-slot>
+                     {c.src
+                       ? <img src={c.src} alt={c.label} style={{ display:'block', width:'100%', aspectRatio:'640/495', objectFit:'contain', background:'#0a0816', borderRadius:'16px' }} />
+                       : <div style={{ display:'flex', alignItems:'center', justifyContent:'center', width:'100%', aspectRatio:'640/495', background:'#0a0816', borderRadius:'16px', color:'rgba(255,255,255,0.25)', fontSize:'14px' }}>Coming soon</div>
+                     }
                 <button
                   className="cert-view"
                   onClick={() => openView(c.id)}
