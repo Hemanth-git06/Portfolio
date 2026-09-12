@@ -689,7 +689,8 @@ function Skills() {
 const CATEGORIES = [
 { id: '3d', label: '3D', sub: 'Modeling · Lookdev · Lighting', icon: 'assets/icons/3d.png', hue: 264 },
 { id: 'gamedev', label: 'Game Dev', sub: 'Shaders · Mechanics · AI · Tools', icon: 'assets/icons/gamepad.png', hue: 28 },
-{ id: 'xr', label: 'XR', sub: 'Meta Quest · WebXR', icon: 'assets/icons/vr.png', hue: 200 }];
+{ id: 'xr', label: 'XR', sub: 'Meta Quest · WebXR', icon: 'assets/icons/vr.png', hue: 200 },
+{ id: 'techart', label: 'Tech Art', sub: 'Pipeline · Rigging · Editor Tools', icon: 'assets/icons/tools.png', hue: 150 }];
 
 
 function Projects() {
@@ -699,13 +700,13 @@ function Projects() {
       <div className="max-w-[1300px] mx-auto">
         <div className="flex items-end justify-between mb-12 md:mb-16 flex-wrap gap-6">
           <div>
-            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Pick a track · 03</div>
+            <div className="reveal mono text-[11px] uppercase tracking-[0.2em] text-white/55 mb-3">Pick a track · 04</div>
             <h2 className="reveal hero-heading font-black uppercase leading-[0.9] tracking-tight" style={{ fontSize: 'clamp(3rem, 10vw, 9rem)' }}>Projects</h2>
           </div>
-          <p className="reveal max-w-md text-white/65 text-base md:text-lg">Three disciplines, three case-study tracks. Tap any card to dive into the work.</p>
+          <p className="reveal max-w-md text-white/65 text-base md:text-lg">Four disciplines, four case-study tracks. Tap any card to dive into the work.</p>
         </div>
 
-        <div className="reveal grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-7">
+        <div className="reveal grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7">
           {CATEGORIES.map((c, i) =>
           <a key={c.id} href={`pages/${c.id}.html`}
           onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)}

@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Technical Art &amp; Pipeline Tools — Hemanth Yarramsetti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="_subpage.css" />
+<style>
+  :root { --cat-hue: 35; }
+
+  /* Reveal animation */
+  .reveal { opacity:0; transform: translateY(24px); transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity:1; transform: none; }
+
+  /* Case study sections */
+  .case-section { padding: 60px 24px; max-width: 1100px; margin: 0 auto; }
+  .case-eyebrow { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color: hsl(var(--cat-hue) 80% 70%); margin-bottom: 10px; }
+  .case-title { font-size: clamp(1.6rem, 3.5vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 14px; }
+  .case-desc { color: rgba(255,255,255,0.65); max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+
+  /* Problem card */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
+  .problem-grid h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+  .problem-grid p { color: rgba(255,255,255,0.62); font-size: 0.95rem; line-height: 1.6; }
+  .stat-stack { display: flex; flex-direction: column; gap: 12px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-radius: 12px; background: rgba(10,8,22,0.5); border: 1px solid rgba(255,255,255,0.07); }
+  .stat-label { font-size: 0.88rem; color: rgba(255,255,255,0.55); }
+  .stat-val { font-family:'JetBrains Mono', monospace; font-weight: 600; }
+  .stat-val.good { color: hsl(160 80% 55%); }
+  .stat-val.bad { color: hsl(350 80% 65%); }
+
+  /* Feature grid */
+  .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feat-card { border-radius: 22px; padding: 26px 22px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); transition: border-color .25s, transform .25s; }
+  .feat-card:hover { border-color: rgba(255,255,255,0.16); transform: translateY(-3px); }
+  .feat-card .feat-icon { width: 36px; height: 36px; border-radius: 10px; background: hsl(var(--cat-hue) 80% 60% / 0.12); display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 14px; color: hsl(var(--cat-hue) 80% 70%); }
+  .feat-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+  .feat-card p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.55; }
+
+  /* Lessons grid */
+  .lessons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .lesson { border-radius: 22px; padding: 26px 22px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+  .lesson h4 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+  .lesson p { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+  /* Code window */
+  .code-window { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #08060e; margin-top: 36px; }
+  .code-bar { display: flex; align-items: center; gap: 7px; padding: 12px 18px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .cd { width: 10px; height: 10px; border-radius: 50%; }
+  .cd-r { background: hsl(350 80% 60%); } .cd-y { background: hsl(40 85% 55%); } .cd-g { background: hsl(160 70% 50%); }
+  .code-name { font-family:'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-left: 8px; }
+  .code-body { padding: 22px; font-family:'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.8; color: #b0a8cc; overflow-x: auto; }
+  .code-body .kw { color: hsl(var(--cat-hue) 80% 65%); }
+  .code-body .fn { color: hsl(160 70% 60%); }
+  .code-body .st { color: hsl(30 85% 65%); }
+  .code-body .cm { color: rgba(255,255,255,0.25); font-style: italic; }
+
+  /* Video embed */
+  .video-frame { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #0a0816; margin-top: 36px; }
+  .video-frame iframe { width: 100%; aspect-ratio: 16/9; display: block; border: none; }
+  .video-placeholder { width: 100%; aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.35); gap: 8px; font-size: 0.9rem; }
+  .video-placeholder span { font-size: 2.5rem; }
+
+  @media (max-width: 860px) {
+    .problem-grid { grid-template-columns: 1fr; }
+    .feat-grid { grid-template-columns: 1fr; }
+    .lessons-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nebula"></div>
+<div class="grid-veil"></div>
+
+<!-- ===== NAV ===== -->
+<nav class="subnav">
+  <div class="crumbs mono" style="font-size:12px">
+    <a href="index.html">Home</a>
+    <span class="sep">/</span>
+    <span style="color:rgba(255,255,255,0.9)">Technical Art</span>
+  </div>
+  <a href="index.html" class="btn-ghost" style="font-size:11px; padding:8px 16px">Back</a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero-section">
+    <div>
+      <div class="h-eyebrow">Maya Python &middot; Revit API &middot; Pipeline Tools</div>
+      <h1 class="h-title">
+        <span class="hero-heading">Technical</span><br />
+        <span class="accent-heading">Art &amp; Tools</span>
+      </h1>
+      <p class="h-subtitle">Production-ready tools that solve real artist problems — procedural geometry generation, automatic LOD pipelines, and asset management systems built for Maya and Revit.</p>
+      <div class="h-actions">
+        <a href="https://github.com/Hemanth-git06" class="btn-primary">GitHub</a>
+        <a href="#projects" class="btn-ghost">View Tools ↓</a>
+      </div>
+    </div>
+    <div class="icon-card">
+      <div class="icon-inner">
+        <img src="Tools.png" alt="Technical Art & Pipeline Tools" style="filter: invert(1) drop-shadow(0 8px 30px hsl(var(--cat-hue) 90% 70% / 0.5));" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="section">
+    <div class="mono" style="font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:12px">Featured Tools</div>
+    <h2 class="accent-heading">Pipeline Tools</h2>
+    <p class="lead">Custom-built tools that improve 3D artist workflows in Maya and Revit.</p>
+
+    <div class="grid-projects">
+
+      <!-- RevitVault -->
+      <a href="#revitvault" class="proj-card" style="grid-column: span 8">
+        <div class="thumb">
+          <div style="position:absolute; inset:14%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; z-index:2">
+            <div class="mono" style="font-size:11px; letter-spacing:0.2em; color:rgba(255,255,255,0.6)">PYREVIT EXTENSION</div>
+            <div style="font-size:clamp(1.8rem,4vw,2.8rem); font-weight:800; text-transform:uppercase; letter-spacing:-0.02em">RevitVault</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-pills">
+            <span class="pill"><span class="dot"></span>Python</span>
+            <span class="pill"><span class="dot"></span>Revit API</span>
+            <span class="pill"><span class="dot"></span>WinForms</span>
+          </div>
+          <h3>RevitVault — Asset Library Manager</h3>
+          <p>Searchable, categorized .rfa family library with preview panel, one-click loading, team sync, and auto-installer. Built for Revit 2027 with PyRevit.</p>
+        </div>
+      </a>
+
+      <!-- Procedural Geo Generator -->
+      <a href="#procgeo" class="proj-card" style="grid-column: span 4">
+        <div class="thumb">
+          <div style="position:absolute; inset:14%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; z-index:2">
+            <div style="font-size:2.5rem">&#9670;</div>
+            <div style="font-size:1.1rem; font-weight:700; text-transform:uppercase">Procedural Geo</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-pills">
+            <span class="pill"><span class="dot"></span>Maya Python</span>
+          </div>
+          <h3>Procedural Geometry Generator</h3>
+          <p>Crystal formations, terrain, scatter tool, and gear mechanisms using your own models.</p>
+        </div>
+      </a>
+
+      <!-- Auto LOD -->
+      <a href="#autolod" class="proj-card" style="grid-column: span 4">
+        <div class="thumb">
+          <div style="position:absolute; inset:14%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; z-index:2">
+            <div style="font-size:2.5rem">&#9651;</div>
+            <div style="font-size:1.1rem; font-weight:700; text-transform:uppercase">Auto LOD</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-pills">
+            <span class="pill"><span class="dot"></span>Maya Python</span>
+          </div>
+          <h3>Auto LOD Generator</h3>
+          <p>One-click LOD generation with batch processing, side-by-side comparison, and Maya LOD Groups.</p>
+        </div>
+      </a>
+
+      <!-- Future slot -->
+      <a href="#" class="proj-card" style="grid-column: span 4; opacity:0.5; pointer-events:none">
+        <div class="thumb">
+          <div style="position:absolute; inset:14%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; z-index:2">
+            <div style="font-size:1.6rem; color:rgba(255,255,255,0.3)">Coming Soon</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-pills">
+            <span class="pill"><span class="dot"></span>TBD</span>
+          </div>
+          <h3>Next Tool</h3>
+          <p>More pipeline tools in development.</p>
+        </div>
+      </a>
+
+      <!-- Future slot -->
+      <a href="#" class="proj-card" style="grid-column: span 4; opacity:0.5; pointer-events:none">
+        <div class="thumb">
+          <div style="position:absolute; inset:14%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:8px; z-index:2">
+            <div style="font-size:1.6rem; color:rgba(255,255,255,0.3)">Coming Soon</div>
+          </div>
+        </div>
+        <div class="proj-info">
+          <div class="proj-pills">
+            <span class="pill"><span class="dot"></span>TBD</span>
+          </div>
+          <h3>Next Tool</h3>
+          <p>More pipeline tools in development.</p>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!--              REVITVAULT CASE STUDY           -->
+  <!-- ============================================ -->
+
+  <div id="revitvault">
+
+    <!-- Problem Statement -->
+    <div class="case-section reveal">
+      <div class="case-eyebrow">RevitVault — Problem Statement</div>
+      <div class="glass" style="border-radius:28px; padding:36px; overflow:hidden">
+        <div class="glass-shine"></div>
+        <div class="problem-grid" style="position:relative">
+          <div>
+            <h3>Every new Revit project starts with the same scavenger hunt</h3>
+            <p>Architects and BIM modelers waste time re-downloading the same chairs, trees, desks, and fixtures for every project. Families scatter across hard drives, shared folders fall out of sync, and there's no quick way to preview what you have before loading it.</p>
+          </div>
+          <div class="stat-stack">
+            <div class="stat-row">
+              <span class="stat-label">Time finding families per project</span>
+              <span class="stat-val bad">30–60 min</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Time with RevitVault</span>
+              <span class="stat-val good">Under 2 min</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Built-in categories</span>
+              <span class="stat-val">16</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">Team sync</span>
+              <span class="stat-val good">Supported</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Video -->
+    <div class="case-section reveal">
+      <div class="case-eyebrow">RevitVault — Demo</div>
+      <div class="case-title">Tool in Action</div>
+      <div class="video-frame">
+        <!-- Replace with your YouTube embed: -->
+        <!-- <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
+        <div class="video-placeholder">
+          <span>&#9654;</span>
+          <p>Replace with your YouTube embed URL</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="case-section reveal">
+      <div class="case-eyebrow">RevitVault — Features</div>
+      <div class="case-title">Built for Real BIM Workflows</div>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <div class="feat-icon">S</div>
+          <h4>Instant Search</h4>
+          <p>Type to filter across all families in real-time. Search by name or category.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">P</div>
+          <h4>Live Preview</h4>
+          <p>Click any family to see a preview image, file size, and details before loading.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">L</div>
+          <h4>One-Click Load</h4>
+          <p>Select families and load them into your current Revit project instantly.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">E</div>
+          <h4>Export to Library</h4>
+          <p>Export families from any project directly into your personal library.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">T</div>
+          <h4>Team Sync</h4>
+          <p>Sync libraries over a network drive, OneDrive, or Dropbox.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">I</div>
+          <h4>Auto-Installer</h4>
+          <p>Batch script creates all folders, copies files, and seeds sample families.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Code Preview -->
+    <div class="case-section reveal">
+      <div class="case-eyebrow">RevitVault — Code</div>
+      <div class="case-title">Under the Hood</div>
+      <div class="case-desc">Built on the Revit API through PyRevit's IronPython runtime. Every operation is wrapped in transactions with proper rollback on failure.</div>
+      <div class="code-window">
+        <div class="code-bar">
+          <span class="cd cd-r"></span><span class="cd cd-y"></span><span class="cd cd-g"></span>
+          <span class="code-name">script.py</span>
+        </div>
+        <div class="code-body"><pre><span class="kw">def</span> <span class="fn">load_family_into_project</span>(filepath, doc=None):
+    family_name = os.path.splitext(
+        os.path.basename(filepath))[<span class="st">0</span>]
+
+    <span class="cm"># Check if already loaded</span>
+    collector = FilteredElementCollector(doc)
+    collector.<span class="fn">OfClass</span>(Family)
+    <span class="kw">for</span> fam <span class="kw">in</span> collector:
+        <span class="kw">if</span> fam.Name == family_name:
+            <span class="kw">return</span> True, <span class="st">"Already loaded."</span>
+
+    <span class="cm"># Load with transaction safety</span>
+    t = Transaction(doc, <span class="st">"Load Family"</span>)
+    t.<span class="fn">Start</span>()
+    success = doc.<span class="fn">LoadFamily</span>(filepath)
+    <span class="kw">if</span> success:
+        t.<span class="fn">Commit</span>()
+    <span class="kw">else</span>:
+        t.<span class="fn">RollBack</span>()</pre></div>
+      </div>
+    </div>
+
+    <!-- Lessons Learned -->
+    <div class="case-section reveal">
+      <div class="case-eyebrow">RevitVault — Lessons Learned</div>
+      <div class="case-title">What Building This Taught Me</div>
+      <div class="lessons-grid">
+        <div class="lesson">
+          <h4>IronPython 2.7 is not Python 3</h4>
+          <p>PyRevit runs on IronPython 2.7. No f-strings, no nonlocal, no walrus operators. Rewrote the entire codebase to use %-formatting and dictionary workarounds.</p>
+        </div>
+        <div class="lesson">
+          <h4>Encoding breaks plugins silently</h4>
+          <p>Non-ASCII characters crashed the plugin on load. UTF-8 declarations and stripping special characters were required for cross-system reliability.</p>
+        </div>
+        <div class="lesson">
+          <h4>.NET enums must be explicit</h4>
+          <p>IronPython rejects integer shorthand for .NET enums. ComboBoxStyle.DropDownList must be used instead of the magic number 2.</p>
+        </div>
+        <div class="lesson">
+          <h4>Preview needs a convention</h4>
+          <p>Revit families don't expose thumbnails through the API. Using a same-name PNG convention is how professional studios handle asset previews.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================================ -->
+  <!--          PROCEDURAL GEO CASE STUDY           -->
+  <!-- ============================================ -->
+
+  <div id="procgeo">
+    <div class="case-section reveal">
+      <div class="case-eyebrow">Procedural Geometry Generator</div>
+      <div class="case-title">Your Models, Procedurally Arranged</div>
+      <div class="case-desc">A Maya Python tool that works with artist-selected models. Select your crystal, rock, or tree mesh and the tool arranges, scatters, or generates geometry with full parameter control.</div>
+
+      <div class="feat-grid" style="grid-template-columns: repeat(4, 1fr)">
+        <div class="feat-card">
+          <h4>Crystal Formation</h4>
+          <p>Select your crystal model — tool arranges copies into natural clusters with gaussian grouping and tilt.</p>
+        </div>
+        <div class="feat-card">
+          <h4>Terrain Generator</h4>
+          <p>Multi-octave noise terrain with erosion passes, plateau control, and smooth edge falloff.</p>
+        </div>
+        <div class="feat-card">
+          <h4>Scatter Tool</h4>
+          <p>Raycast-based object scattering with surface alignment, slope filtering, and uniform distribution.</p>
+        </div>
+        <div class="feat-card">
+          <h4>Gear Mechanism</h4>
+          <p>Interlocking gears with pitch-radius tooth profiles, boolean spoke cutouts, and proper meshing.</p>
+        </div>
+      </div>
+
+      <!-- Video slot -->
+      <div class="video-frame">
+        <!-- <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
+        <div class="video-placeholder">
+          <span>&#9654;</span>
+          <p>Procedural Geo Generator demo video</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--            AUTO LOD CASE STUDY               -->
+  <!-- ============================================ -->
+
+  <div id="autolod">
+    <div class="case-section reveal">
+      <div class="case-eyebrow">Auto LOD Generator</div>
+      <div class="case-title">One-Click Level of Detail</div>
+      <div class="case-desc">Select any mesh in Maya and generate LOD0 through LOD3+ with configurable reduction strategies, UV preservation, and Maya LOD Group creation.</div>
+
+      <div class="feat-grid">
+        <div class="feat-card">
+          <h4>Three Reduction Modes</h4>
+          <p>Progressive, Conservative, or Aggressive strategies plus custom percentage input.</p>
+        </div>
+        <div class="feat-card">
+          <h4>Preservation Controls</h4>
+          <p>Preserve UV seams, hard edges, mesh borders, and vertex colors during reduction.</p>
+        </div>
+        <div class="feat-card">
+          <h4>Side-by-Side Compare</h4>
+          <p>Preview each LOD level individually or lay them all out for visual comparison.</p>
+        </div>
+      </div>
+
+      <!-- Video slot -->
+      <div class="video-frame">
+        <!-- <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
+        <div class="video-placeholder">
+          <span>&#9654;</span>
+          <p>Auto LOD Generator demo video</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TOOLS STRIP ===== -->
+  <div class="tools-strip reveal">
+    <div class="tools-head">
+      <div class="tools-eyebrow mono">Tech Stack</div>
+      <div class="tools-title">Technologies Used Across These Tools</div>
+    </div>
+    <ul class="tools-row tools-row-6">
+      <li class="tool"><div class="tool-icon"><span style="font-size:18px">&#128013;</span></div><span>Python</span></li>
+      <li class="tool"><div class="tool-icon"><span style="font-size:14px">M</span></div><span>Maya API</span></li>
+      <li class="tool"><div class="tool-icon"><span style="font-size:14px">R</span></div><span>Revit API</span></li>
+      <li class="tool"><div class="tool-icon"><span style="font-size:14px">Py</span></div><span>PyRevit</span></li>
+      <li class="tool"><div class="tool-icon"><span style="font-size:14px">.N</span></div><span>WinForms</span></li>
+      <li class="tool"><div class="tool-icon"><span style="font-size:14px">&#9881;</span></div><span>Batch Script</span></li>
+    </ul>
+  </div>
+
+  <!-- ===== FOOTER CTA ===== -->
+  <div class="foot-cta reveal">
+    <h3 class="accent-heading">Want to see more?</h3>
+    <p>These tools are open source. Check them out on GitHub or get in touch to talk about pipeline development.</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
+      <a href="https://github.com/Hemanth-git06" class="btn-primary">View on GitHub</a>
+      <a href="index.html#contact" class="btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="page-foot">
+    <div>&copy; 2026 Hemanth Yarramsetti</div>
+    <div>Cleveland, OH</div>
+  </footer>
+
+</div>
+
+<script>
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
